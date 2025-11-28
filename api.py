@@ -1,11 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import yt_dlp
 import os
 import uuid
 
-app = FastAPI()
+app = FastAPI(title="YouTube Downloader API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class VideoRequest(BaseModel):
     url: str
@@ -20,7 +29,9 @@ async def download_video(request: VideoRequest):
         
         ydl_opts = {
             'outtmpl': output_path,
-            'quiet': True
+            'quiet': True,
+            'no_warnings': True,
+            'format': 'best'
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
