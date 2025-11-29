@@ -1,42 +1,65 @@
 # YouTube Downloader API
 
-## Quick Deploy Options
+Simple API to get direct YouTube video download links using Invidious.
 
-### 1. Railway (Easiest - Free Tier)
+## Features
+✅ No bot detection
+✅ No cookies needed
+✅ No CAPTCHA
+✅ Works with YouTube videos and Shorts
+✅ Fast and lightweight
+
+## Quick Deploy
+
+### Render.com (Recommended)
+1. Push code to GitHub
+2. Go to [render.com](https://render.com)
+3. New → Web Service → Connect repo
+4. Start Command: `uvicorn api:app --host 0.0.0.0 --port $PORT`
+5. Done! Get your URL
+
+### Railway.app
 1. Push code to GitHub
 2. Go to [railway.app](https://railway.app)
 3. Click "New Project" → "Deploy from GitHub"
 4. Select your repo
-5. Done! Get your URL
+5. Done!
 
-### 2. Render.com (Free Tier)
-1. Push code to GitHub
-2. Go to [render.com](https://render.com)
-3. New → Web Service → Connect repo
-4. Done! Get your URL
-
-### 3. Docker (Any VPS/EC2)
+### Docker
 ```bash
 docker-compose up -d
 ```
 
-### 4. AWS EC2
+## API Usage
+
+### Request
 ```bash
-# SSH into EC2
-sudo apt update
-sudo apt install docker.io docker-compose -y
-git clone <your-repo>
-cd yt-dlp
-docker-compose up -d
+curl -X POST "https://your-app.onrender.com/download" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://www.youtube.com/watch?v=VIDEO_ID"}'
 ```
+
+### Response
+```json
+{
+  "status": "success",
+  "video_id": "VIDEO_ID",
+  "download_url": "https://inv.nadeko.net/latest_version?id=VIDEO_ID&itag=22",
+  "note": "Use this URL to directly download the video"
+}
+```
+
+### Supported URLs
+- `https://www.youtube.com/watch?v=VIDEO_ID`
+- `https://youtube.com/shorts/VIDEO_ID`
+- `https://youtu.be/VIDEO_ID`
+
+## API Endpoints
+- POST `/download` - Get video download link
+- GET `/docs` - Interactive API documentation
 
 ## Local Testing
 ```bash
-docker build -t yt-api .
-docker run -p 8000:8000 yt-api
+uvicorn api:app --reload
 ```
-
-## API Endpoints
-- POST `/download` - Download video
-- GET `/video/{filename}` - Get video file
-- GET `/docs` - API documentation
+Visit: http://localhost:8000/docs
